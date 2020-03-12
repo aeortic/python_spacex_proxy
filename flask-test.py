@@ -1,4 +1,3 @@
-import pdb
 from flask import Flask, escape, request
 import requests as req
 import json
@@ -95,8 +94,6 @@ def index():
         combined_launches.append(launch)
         
     return web_format(combined_launches)
-    #name = request.args.get("name", "World")
-    #return f'Hello, {escape(name)}!'
 
 @app.route('/launches')
 def launches_route():
