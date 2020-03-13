@@ -1,1 +1,5 @@
 .venv/
+.aws/
+spacex_proxy/.chalice/deployments/
+spacex_proxy/.chalice/venv/
+spacex_proxy/__pycache__/*

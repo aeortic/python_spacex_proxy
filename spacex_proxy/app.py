@@ -1,12 +1,12 @@
-from flask import Flask, escape, request
+from chalice import Chalice
 import requests as req
 import json
 
-app = Flask(__name__)
+app = Chalice(app_name='spacex_proxy')
 
 # dictionary with rocket_id as key
 trimmed_rockets = dict()
-           
+
 # list with pruned launch data
 trimmed_launches = list()
 
@@ -45,7 +45,7 @@ def get_rockets():
 def get_launches():
     if len(trimmed_launches) > 0:
         return trimmed_launches
-    
+
     l = req.get("https://api.spacexdata.com/v3/launches")
     launches = json.loads(l.text)
 
@@ -73,16 +73,16 @@ def get_launches():
                 "rocket": {"rocket_id": launch['rocket']['rocket_id']},
                 "payloads": trimmed_payloads
         }
-        
+
         trimmed_launches.append(trimmed_launch)
-    
+
     return trimmed_launches
 
 @app.route('/')
 def index():
     if len(combined_launches) > 0:
-        return web_format(combined_launches)
-    
+        return combined_launches
+
     rockets = get_rockets()
     launches = get_launches()
 
@@ -92,13 +92,14 @@ def index():
         rocket = rockets[rocket_id]
         launch['rocket'] = rocket
         combined_launches.append(launch)
-        
-    return web_format(combined_launches)
+
+    return combined_launches
 
 @app.route('/launches')
 def launches_route():
-    return web_format(get_launches())
+    return get_launches()
 
 @app.route('/rockets')
 def rockets_route():
-    return web_format(get_rockets())
+    return get_rockets()
+
